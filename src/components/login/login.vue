@@ -1,6 +1,6 @@
 <template>
-<div>
-  <el-form label-position="top" ref="form" :model="userForm" label-width="80px">
+<div class="login-wrap">
+  <el-form class="login-from" label-position="top" ref="form" :model="userForm" label-width="80px">
     <el-form-item label="用户名">
       <el-input
         v-model="userForm.username"></el-input>
@@ -10,28 +10,9 @@
         v-model="userForm.password"></el-input>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="login">登录</el-button>
+      <el-button class="login-btn" type="primary" @click="login">登录</el-button>
     </el-form-item>
   </el-form>
-  <!-- <form @submit.prevent="login">
-    <div>
-      <label for="username">用户名</label>
-      <input
-       type="text"
-       id="username"
-       v-model="userForm.username">
-    </div>
-    <div>
-      <label for="password">密码</label>
-      <input
-      type="password"
-      id="password"
-      v-model="userForm.password">
-    </div>
-    <div>
-      <button>登录</button>
-    </div>
-  </form> -->
 </div>
 </template>
 
@@ -65,5 +46,20 @@ export default {
 </script>
 
 <style>
-
+.login-wrap {
+  background-color: #324152;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.login-wrap .login-from {
+  background-color: #fff;
+  width: 400px;
+  padding: 30px;
+  border-radius: 5px;
+}
+.login-wrap .login-from .login-btn {
+  width: 100%;
+}
 </style>
