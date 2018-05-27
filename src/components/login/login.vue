@@ -1,7 +1,19 @@
 <template>
 <div>
-  <p>登录组件</p>
-  <form @submit.prevent="login">
+  <el-form label-position="top" ref="form" :model="userForm" label-width="80px">
+    <el-form-item label="用户名">
+      <el-input
+        v-model="userForm.username"></el-input>
+    </el-form-item>
+    <el-form-item label="密码">
+      <el-input
+        v-model="userForm.password"></el-input>
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" @click="login">登录</el-button>
+    </el-form-item>
+  </el-form>
+  <!-- <form @submit.prevent="login">
     <div>
       <label for="username">用户名</label>
       <input
@@ -19,13 +31,12 @@
     <div>
       <button>登录</button>
     </div>
-  </form>
+  </form> -->
 </div>
 </template>
 
 <script>
 import axios from 'axios'
-
 export default {
   data () {
     return {
