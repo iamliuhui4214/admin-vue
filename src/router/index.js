@@ -3,6 +3,11 @@ import Router from 'vue-router'
 import Login from '@/components/login/login'
 import Home from '@/components/home/home'
 
+// 用户列表
+import UserList from '@/components/user-list/userList'
+
+// 角色列表
+import RoleList from '../components/role-list/roleList'
 Vue.use(Router)
 
 const router = new Router({
@@ -15,7 +20,24 @@ const router = new Router({
     {
       name: 'home',
       path: '/',
-      component: Home
+      component: Home,
+      // 我们可通过配置路由的方式将某个组件渲染到父路由组件
+      // 1在父路由组件中添加<router-view>出口标记
+      // 2在父路由中通过children声明路由
+      // children只一个数组
+      // 数组中配置这一个一个子路由对象
+      children: [
+        {
+          name: 'user-list',
+          path: '/users',
+          component: UserList
+        },
+        {
+          name: 'role-list',
+          path: '/roles',
+          component: RoleList
+        }
+      ]
     }
   ]
 })
