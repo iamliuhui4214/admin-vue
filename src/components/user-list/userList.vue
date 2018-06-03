@@ -51,16 +51,10 @@
 </template>
 
 <script>
-import {getToken} from '@/assets/js/auth'
 
 export default {
   async created () {
-    let token = getToken()
     let res = await this.$http.get('/users', {
-      headers: {
-        // 配置请求头携带身份令牌
-        Authorization: token
-      },
       params: { // 请求参数，对象会被转为k=v&k=v的形式拼接到请求路径问号后面发起请求
         pagenum: 1,
         pagesize: 5

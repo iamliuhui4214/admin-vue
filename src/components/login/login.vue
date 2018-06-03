@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import {saveUserInfo} from '@/assets/js/auth'
 
 export default {
@@ -35,7 +34,7 @@ export default {
       // 2. 表单验证
       // 3. 发请求执行登陆操作
       // 4. 根据响应做交互
-      const res = await axios.post('http://localhost:8888/api/private/v1/login', this.userForm)
+      const res = await this.$http.post('/login', this.userForm)
       const data = res.data
       if (data.meta.status === 200) {
         saveUserInfo(data.data, window)
