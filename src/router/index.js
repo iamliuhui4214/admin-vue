@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/components/login/login'
 import Home from '@/components/home/home'
-
+import {getUserInfo} from '@/assets/js/auth'
 // 用户列表
 import UserList from '@/components/user-list/userList'
 
@@ -57,9 +57,8 @@ router.beforeEach((to, from, next) => {
     next()
   } else {
     // 检查登录状态令牌
-    const token = window.localStorage.getItem('admin-token')
-    if (!token) {
-      // 无令牌这让其登录
+    if (!getUserInfo(window)) {
+      // 无令牌这让其登
       next({
         name: 'login'
       })

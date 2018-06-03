@@ -24,18 +24,18 @@
       :data="tableData"
       style="width: 100%">
       <el-table-column
-        prop="date"
-        label="日期"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="name"
+        prop="username"
         label="姓名"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="address"
-        label="地址">
+        prop="email"
+        label="邮箱"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="create_time"
+        label="电话">
       </el-table-column>
   </el-table>
   <el-pagination
@@ -51,27 +51,27 @@
 </template>
 
 <script>
+import {getToken} from '@/assets/js/auth'
+
 export default {
+  async created () {
+    let token = getToken()
+    let res = await this.$http.get('/users', {
+      headers: {
+        // 配置请求头携带身份令牌
+        Authorization: token
+      },
+      params: { // 请求参数，对象会被转为k=v&k=v的形式拼接到请求路径问号后面发起请求
+        pagenum: 1,
+        pagesize: 5
+      }
+    })
+    this.tableData = res.data.data.users
+  },
   data () {
     return {
       searchText: '',
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      tableData: []
     }
   },
   methods: {
