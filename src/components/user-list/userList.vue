@@ -38,14 +38,20 @@
         label="电话">
       </el-table-column>
   </el-table>
+  <!-- 每页多大 page-size="5" -->
+
+  <!-- 如果还有 page-sizes="[1,2,3,4]" 就以他为准-->
+
+  <!-- 一共有多少条记录:total="totalSize" -->
+
+  <!-- current-page不是看第几页数据而是指定页码高亮  -->
   <el-pagination
   @size-change="handleSizeChange"
   @current-change="handleCurrentChange"
-  :current-page="4"
-  :page-sizes="[100, 200, 300, 400]"
-  :page-size="100"
+  :current-page="currentPage"
+  :page-sizes="[1,2,3,4]"
   layout="total, sizes, prev, pager, next, jumper"
-  :total="400">
+  :total="totalSize">
 </el-pagination>
 </div>
 </template>
@@ -54,26 +60,52 @@
 
 export default {
   async created () {
-    let res = await this.$http.get('/users', {
-      params: { // 请求参数，对象会被转为k=v&k=v的形式拼接到请求路径问号后面发起请求
-        pagenum: 1,
-        pagesize: 5
-      }
-    })
-    this.tableData = res.data.data.users
+    // 用户列表组件一上来就加载第一页数据
+    this.loadUsersByPage(1)
   },
   data () {
     return {
       searchText: '',
-      tableData: []
+      tableData: [],
+      totalSize: 1,
+      currentPage: 1,
+      pageSize: 1
     }
   },
   methods: {
-    handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
+    // 当我们点击切换每页大小的时候就会触发handleSizeChange方法
+    // 我么要做的是在这里拿到用户选择的每页大小重新发起新的数据请求
+    handleSizeChange (pageSize) {
+      this.pageSize = pageSize
+      // 每页大小发生变化我们就要重新加载第一页数据
+      // 这一个参数1是给服务器接口用的
+      this.loadUsersByPage(1, pageSize)
+
+      // 页码改变之后不止要让数据到第一页，高亮效果也要到第一页
+      this.currentPage = 1
     },
-    handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
+
+    // 当点击分页组件页码发生改变时会触发handleCurrentChange方法
+    // 我们要做的是在这个方法中调用loadUsersByPage（当前页码）
+    handleCurrentChange (currentPage) {
+      // 将currentPage更新为最新点击数据
+      // Element插件的页码发生改变的时候不会修改我们的数据currentPage
+      // 我们这里让每一次改变的时候，手动将currentPage赋值为当前最新页码
+      this.currentPage = currentPage
+
+      // 代码改变请求当前页码对应数据
+      this.loadUsersByPage(currentPage, this.pageSize)
+    },
+    async loadUsersByPage (page, pageSize = 1) {
+      let res = await this.$http.get('/users', {
+        params: { // 请求参数，对象会被转为k=v&k=v的形式拼接到请求路径问号后面发起请求
+          pagenum: page,
+          pagesize: pageSize
+        }
+      })
+      const {total, users} = res.data.data
+      this.tableData = users
+      this.totalSize = total
     }
   }
 }
