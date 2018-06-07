@@ -35,7 +35,30 @@
       </el-table-column>
       <el-table-column
         prop="create_time"
-        label="电话">
+        label="电话"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        label="用户状态"
+        width="100">
+        <template slot-scope="scope">
+          <!-- 我们可以通过scope.row拿到当前期遍历对象 -->
+          <!-- 也就是当前用户数组对象 -->
+          <el-switch
+            v-model="scope.row.mg_state"
+            active-color="#13ce66"
+            inactive-color="#ff4949">
+          </el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="操作"
+        width="200">
+        <template slot-scope="scope">
+          <el-button size="mini" type="primary" icon="el-icon-edit"></el-button>
+          <el-button size="mini" type="danger" icon="el-icon-delete"></el-button>
+          <el-button size="mini" type="danger" icon="el-icon-delete"></el-button>
+        </template>
       </el-table-column>
   </el-table>
   <!-- 每页多大 page-size="5" -->
