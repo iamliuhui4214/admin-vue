@@ -13,7 +13,9 @@
   <el-row class="user-list-search">
     <el-col :span="8">
       <el-input placeholder="请输入内容" v-model="searchText" class="input-with-select">
-      <el-button slot="append" icon="el-icon-search"></el-button>
+      <el-button slot="append"
+       icon="el-icon-search"
+       @click="handleSearch"></el-button>
       </el-input>
     </el-col>
     <el-col :span="4">
@@ -72,7 +74,7 @@
   @size-change="handleSizeChange"
   @current-change="handleCurrentChange"
   :current-page="currentPage"
-  :page-sizes="[1,2,3,4]"
+  :page-sizes="[1,2,3]"
   layout="total, sizes, prev, pager, next, jumper"
   :total="totalSize">
 </el-pagination>
@@ -123,12 +125,17 @@ export default {
       let res = await this.$http.get('/users', {
         params: { // 请求参数，对象会被转为k=v&k=v的形式拼接到请求路径问号后面发起请求
           pagenum: page,
-          pagesize: pageSize
+          pagesize: pageSize,
+          // 根据文本框的内容来搜索
+          query: this.searchText
         }
       })
       const {total, users} = res.data.data
       this.tableData = users
       this.totalSize = total
+    },
+    handleSearch () {
+      this.loadUsersByPage(1)
     }
   }
 }
