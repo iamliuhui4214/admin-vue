@@ -46,8 +46,17 @@
         <template slot-scope="scope">
           <!-- 我们可以通过scope.row拿到当前期遍历对象 -->
           <!-- 也就是当前用户数组对象 -->
+
+           <!-- @change="handleStateChange"在事件处理函数中可以获取switch开关选中状态 -->
+           <!-- @change="handleStateChange(scope.row.id)"直接调用绑定的话就得不到switch开关的选中状态 -->
+           <!-- 所以我们在这里：
+           @change="(val) => {}"直接绑定一个匿名箭头函数作为事件函数，注意不要调用
+           (val) => {} 是当el-switch组件change事件会自动调用，然后将选中状态传给匿名函数
+           我们就可以在这个事件内部调用我们指定的事件处理函数
+           所以：@change="(val) => {handleStateChange(val, scope.row)}" -->
           <el-switch
             v-model="scope.row.mg_state"
+            @change="(val) => {handleStateChange(val,scope.row)}"
             active-color="#13ce66"
             inactive-color="#ff4949">
           </el-switch>
@@ -136,6 +145,19 @@ export default {
     },
     handleSearch () {
       this.loadUsersByPage(1)
+    },
+    async handleStateChange (state, user) {
+      // 拿到用户id
+      // 拿到switch开关选中状态
+      // 发送请求改变状态
+      const {id: userId} = user
+      const res = await this.$http.put(`/users/${userId}/state/${state}`)
+      if (res.data.meta.status === 200) {
+        this.$message({
+          type: 'success',
+          message: `用户状态${state ? '启用' : '禁用'}成功`
+        })
+      }
     }
   }
 }
