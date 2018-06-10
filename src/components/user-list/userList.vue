@@ -232,12 +232,21 @@ export default {
         // 代码执行到这里就表示代码验证通过了，我么就可以提交表单
         const res = await this.$http.post('/users', this.userForm)
         if (res.data.meta.status === 201) {
+          // 添加成功提示消息
           this.$message({
             type: 'success',
             message: '添加用户成功'
           })
+          // 关闭对话框
           this.dialogFormVisible = false
+
+          // 重新加载用户列表数据
           this.loadUsersByPage(this.currentPage)
+
+          // 清空表单内容
+          for (let key in this.userForm) {
+            this.userForm[key] = ''
+          }
         }
       })
     }
