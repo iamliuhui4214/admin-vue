@@ -70,7 +70,10 @@
         width="200">
         <template slot-scope="scope">
           <el-button size="mini" type="primary" icon="el-icon-edit"></el-button>
-          <el-button size="mini" type="danger" icon="el-icon-delete"></el-button>
+          <el-button size="mini"
+          type="danger"
+          icon="el-icon-delete"
+          @click="handleDeleteUser(scope.row)"></el-button>
           <el-button size="mini" type="danger" icon="el-icon-delete"></el-button>
         </template>
       </el-table-column>
@@ -86,7 +89,7 @@
   @size-change="handleSizeChange"
   @current-change="handleCurrentChange"
   :current-page="currentPage"
-  :page-sizes="[1,2,3]"
+  :page-sizes="[1,2,3,4,5,6]"
   layout="total, sizes, prev, pager, next, jumper"
   :total="totalSize">
   </el-pagination>
@@ -217,6 +220,7 @@ export default {
         })
       }
     },
+    // 处理添加用户
     async handleAddUser () {
       // 1获取表单数据
       // 2表单验证
@@ -248,6 +252,29 @@ export default {
             this.userForm[key] = ''
           }
         }
+      })
+    },
+    // 处理删除用户
+    async handleDeleteUser (user) {
+      this.$confirm('删除用户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => { // 确认删除执行的代码
+        const res = await this.$http.delete(`/users/${user.id}`)
+        if (res.data.meta.status === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          // 删除成功重新加载用户数据
+          this.loadUsersByPage(this.currentPage)
+        }
+      }).catch(() => { // 取消删除执行的代码
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     }
   }
