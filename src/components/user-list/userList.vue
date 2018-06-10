@@ -90,18 +90,29 @@
   layout="total, sizes, prev, pager, next, jumper"
   :total="totalSize">
   </el-pagination>
-  <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
-    <el-form :model="userForm">
-      <el-form-item label="用户名" label-width="120px">
+  <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
+    <!-- 表单验证
+    1 为el-form添加rules验证规则
+    2 em-form-item元素配置prop属性 值是验证对象中对应的对象名称
+    如果想使用javascript强行验证，那么我们需要做：
+    1 为el-form添加ref属性，给ref起一个名字（类似给元素起id)
+    2 在代码中使用 this.$refs['ref名字'].validate() 验证表单
+    -->
+    <el-form
+    :model="userForm"
+    :rules="addUserFormRules"
+    ref="addUserForm"
+    >
+      <el-form-item label="用户名" label-width="120px" prop="username">
         <el-input v-model="userForm.username" auto-complete="off"></el-input>
       </el-form-item>
-      <el-form-item label="密码" label-width="120px">
-        <el-input v-model="userForm.password" auto-complete="off"></el-input>
+      <el-form-item label="密码" label-width="120px" prop="password">
+        <el-input type="password" v-model="userForm.password" auto-complete="off"></el-input>
       </el-form-item>
-      <el-form-item label="邮箱" label-width="120px">
-        <el-input v-model="userForm.email" auto-complete="off"></el-input>
+      <el-form-item label="邮箱" label-width="120px" prop="email">
+        <el-input type="email" v-model="userForm.email" auto-complete="off"></el-input>
       </el-form-item>
-      <el-form-item label="电话" label-width="120px">
+      <el-form-item label="电话" label-width="120px" prop="mobile">
         <el-input v-model="userForm.mobile" auto-complete="off"></el-input>
       </el-form-item>
     </el-form>
@@ -133,7 +144,24 @@ export default {
         email: '',
         mobile: ''
       },
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      // 添加rules表单验证规则
+      addUserFormRules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 3, max: 18, message: '长度在 3 到 18 个字符', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur' }
+        ],
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' }
+        ],
+        mobile: [
+          { required: true, message: '请输入用户名', trigger: 'blur' }
+        ]
+      }
     }
   },
   methods: {
@@ -197,15 +225,21 @@ export default {
       // 添加成功给出提示
       // 关闭对话框
       // 重新加载当前数据
-      const res = await this.$http.post('/users', this.userForm)
-      if (res.data.meta.status === 201) {
-        this.$message({
-          type: 'success',
-          message: '添加用户成功'
-        })
-        this.dialogFormVisible = false
-        this.loadUsersByPage(this.currentPage)
-      }
+      this.$refs['addUserForm'].validate(async (valid) => {
+        if (!valid) {
+          return false
+        }
+        // 代码执行到这里就表示代码验证通过了，我么就可以提交表单
+        const res = await this.$http.post('/users', this.userForm)
+        if (res.data.meta.status === 201) {
+          this.$message({
+            type: 'success',
+            message: '添加用户成功'
+          })
+          this.dialogFormVisible = false
+          this.loadUsersByPage(this.currentPage)
+        }
+      })
     }
   }
 }
