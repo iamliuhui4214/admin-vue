@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <el-row>
+        <el-col :span="24">
+            <el-breadcrumb class="user-list-breadcrumb"
+            separator-class="el-icon-arrow-right">
+            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+            <el-breadcrumb-item>用户列表</el-breadcrumb-item>
+            </el-breadcrumb>
+        </el-col>
+        </el-row>
+        <el-row class="user-list-search">
+        <el-col :span="8">
+            <el-input placeholder="请输入内容" v-model="searchText" class="input-with-select">
+            <el-button slot="append"
+            icon="el-icon-search"
+            @click="handleSearch"></el-button>
+            </el-input>
+        </el-col>
+        <el-col :span="4">
+            <el-button
+            type="success"
+            plain
+            @click="dialogFormVisible = true">添加用户</el-button>
+        </el-col>
+        </el-row>
+        <el-table
+            :data="tableData"
+            style="width: 100%">
+            <el-table-column
+            prop="username"
+            label="姓名"
+            width="180">
+            </el-table-column>
+            <el-table-column
+            prop="email"
+            label="邮箱"
+            width="180">
+            </el-table-column>
+            <el-table-column
+            prop="create_time"
+            label="电话"
+            width="180">
+            </el-table-column>
+            <el-table-column
+            label="用户状态"
+            width="100">
+            <template slot-scope="scope">
+                <!-- 我们可以通过scope.row拿到当前期遍历对象 -->
+                <!-- 也就是当前用户数组对象 -->
+
+                <!-- @change="handleStateChange"在事件处理函数中可以获取switch开关选中状态 -->
+                <!-- @change="handleStateChange(scope.row.id)"直接调用绑定的话就得不到switch开关的选中状态 -->
+                <!-- 所以我们在这里：
+                @change="(val) => {}"直接绑定一个匿名箭头函数作为事件函数，注意不要调用
+                (val) => {} 是当el-switch组件change事件会自动调用，然后将选中状态传给匿名函数
+                我们就可以在这个事件内部调用我们指定的事件处理函数
+                所以：@change="(val) => {handleStateChange(val, scope.row)}" -->
+                <el-switch
+                v-model="scope.row.mg_state"
+                @change="(val) => {handleStateChange(val,scope.row)}"
+                active-color="#13ce66"
+                inactive-color="#ff4949">
+                </el-switch>
+            </template>
+            </el-table-column>
+            <el-table-column
+            label="操作"
+            width="200">
+            <template slot-scope="scope">
+                <el-button size="mini" type="primary" icon="el-icon-edit"></el-button>
+                <el-button size="mini"
+                type="danger"
+                icon="el-icon-delete"
+                @click="handleDeleteUser(scope.row)"></el-button>
+                <el-button size="mini" type="danger" icon="el-icon-delete"></el-button>
+            </template>
+            </el-table-column>
+        </el-table>
+        <!-- 每页多大 page-size="5" -->
+
+        <!-- 如果还有 page-sizes="[1,2,3,4]" 就以他为准-->
+
+        <!-- 一共有多少条记录:total="totalSize" -->
+
+        <!-- current-page不是看第几页数据而是指定页码高亮  -->
+        <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[1,2,3,4,5,6]"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="totalSize">
+        </el-pagination>
+        <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
+        <!-- 表单验证
+        1 为el-form添加rules验证规则
+        2 em-form-item元素配置prop属性 值是验证对象中对应的对象名称
+        如果想使用javascript强行验证，那么我们需要做：
+        1 为el-form添加ref属性，给ref起一个名字（类似给元素起id)
+        2 在代码中使用 this.$refs['ref名字'].validate() 验证表单
+        -->
+        <el-form
+        :model="userForm"
+        :rules="addUserFormRules"
+        ref="addUserForm"
+        >
+            <el-form-item label="用户名" label-width="120px" prop="username">
+            <el-input v-model="userForm.username" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="密码" label-width="120px" prop="password">
+            <el-input type="password" v-model="userForm.password" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱" label-width="120px" prop="email">
+            <el-input type="email" v-model="userForm.email" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="电话" label-width="120px" prop="mobile">
+            <el-input v-model="userForm.mobile" auto-complete="off"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="handleAddUser">确 定</el-button>
+        </div>
+        </el-dialog>
+    </div>
+</body>
+</html>
