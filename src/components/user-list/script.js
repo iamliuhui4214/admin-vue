@@ -16,7 +16,13 @@ export default {
           email: '',
           mobile: ''
         },
-        dialogFormVisible: false,
+        editUserForm: {
+          username: '111',
+          email: '222',
+          mobile: '333'
+        },
+        dialogFormVisible: false, //控制添加用户对话框显示隐藏
+        dialogEditFormVisible: false, //控制编辑用户对话框显示隐藏
         // 添加rules表单验证规则
         addUserFormRules: {
           username: [
@@ -145,6 +151,18 @@ export default {
             message: '已取消删除'
           })
         })
-      }
+      },
+      // 处理编辑用户
+      async handleEditUser () {
+        console.log(1)
+      },
+      // 处理显示被编辑用户表单信息
+      async handleShowEditForm (user) {
+        this.dialogEditFormVisible = true
+        const res = await this.$http.get(`/users/${user.id}`)
+        if (res.data.meta.status === 200) {
+          this.editUserForm = res.data.data
+        }
+      } 
     }
   }
