@@ -47,7 +47,7 @@
             width="180">
             </el-table-column>
             <el-table-column
-            prop="create_time"
+            prop="mobile"
             label="电话"
             width="180">
             </el-table-column>
@@ -146,13 +146,17 @@
             <el-form
             :model="editUserForm">
                 <el-form-item label="用户名" label-width="120px" prop="username">
-                <el-input v-model="editUserForm.username" auto-complete="off"></el-input>
+                <el-input
+                v-model="editUserForm.username"
+                auto-complete="off"
+                :disabled="true"></el-input>
                 </el-form-item>
                 <el-form-item label="邮箱" label-width="120px" prop="email">
                 <el-input type="email" v-model="editUserForm.email" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="电话" label-width="120px" prop="mobile">
-                <el-input v-model="editUserForm.mobile" auto-complete="off"></el-input>
+                <el-input v-model="editUserForm.mobile"
+                auto-complete="off"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
